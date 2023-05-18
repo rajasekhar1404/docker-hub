@@ -63,7 +63,7 @@ jobs:
       - name: SSH into EC2 instance
         uses: bitovi/github-actions-deploy-docker-to-ec2@v0.4.2
         with:
-          host: 3.84.220.235
+          host: 13.53.172.69
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
