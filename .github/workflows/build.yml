@@ -44,10 +44,10 @@ jobs:
           push: true
           tags: rajasekhar1404/krs-docker-demo:latest
 
-  deploy_to_ec2:
-    name: Deploy to EC2
-    runs-on: ubuntu-latest
+  deploy:
+    name: Deploy to AWS EC2
     needs: build_and_push
+    runs-on: ubuntu-latest
     steps:
       - name: Install AWS CLI
         run: |
@@ -60,12 +60,19 @@ jobs:
           aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws configure set default.region ${{ secrets.AWS_DEFAULT_REGION }}
 
-      - name: Pull Docker image in EC2
-        run: |
-          echo "$SSH_PRIVATE_KEY" | tr -d '\r' > key.pem
-          chmod 600 key.pem
-          ssh -o "StrictHostKeyChecking=no" -i key.pem ec2-user@3.84.220.235 "docker pull rajasekhar1404/krs-docker-demo:latest"
+      - name: SSH into EC2 instance
+        uses: appleboy/ssh-action@master
+        with:
+          host: 3.84.220.235
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Pull the latest Docker image
+            docker pull rajasekhar1404/krs-docker-demo:latest
 
-      - name: Run Docker container in EC2
-        run: |
-          ssh -i ~/.ssh/key.pem ec2-user@3.84.220.235 "docker run -d -p 8080:8080 rajasekhar1404/krs-docker-demo:latest"
+            # Stop and remove the existing container (if any)
+            docker stop my-container || true
+            docker rm my-container || true
+
+            # Run the Docker container
+            docker run -d --name my-container -p 80:8080 rajasekhar1404/krs-docker-demo:latest
