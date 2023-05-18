@@ -66,6 +66,7 @@ jobs:
           host: 34.238.239.90
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          aws-region: us-east-1
           script: |
             # Install Docker
             curl -fsSL https://get.docker.com -o get-docker.sh
