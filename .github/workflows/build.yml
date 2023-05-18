@@ -61,7 +61,7 @@ jobs:
           aws configure set default.region ${{ secrets.AWS_DEFAULT_REGION }}
 
       - name: SSH into EC2 instance
-        uses: jakejarvis/ssh-action@4.1.3
+        uses: bitovi/github-actions-deploy-docker-to-ec2@v0.4.2
         with:
           host: 3.84.220.235
           username: ubuntu
