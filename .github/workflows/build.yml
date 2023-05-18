@@ -62,7 +62,9 @@ jobs:
 
       - name: Pull Docker image in EC2
         run: |
-          ssh -i ~/.ssh/key.pem ec2-user@3.84.220.235 "docker pull rajasekhar1404/krs-docker-demo:latest"
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
+          chmod 600 key.pem
+          ssh -i key.pem ec2-user@3.84.220.235 "docker pull rajasekhar1404/krs-docker-demo:latest"
 
       - name: Run Docker container in EC2
         run: |
