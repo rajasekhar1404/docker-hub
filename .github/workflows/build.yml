@@ -61,7 +61,7 @@ jobs:
           aws configure set default.region ${{ secrets.AWS_DEFAULT_REGION }}
 
       - name: SSH into EC2 instance
-        uses: appleboy/ssh-action@v0.19.0
+        uses: appleboy/ssh-action@v1
         with:
           host: 3.84.220.235
           username: ubuntu
