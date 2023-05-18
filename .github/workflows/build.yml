@@ -25,6 +25,7 @@ jobs:
 
       - name: Run Tests
         run: mvn -B test
+
   build_and_push:
     name: Build & Push to DockerHub
     runs-on: ubuntu-latest
@@ -42,3 +43,27 @@ jobs:
           context: .
           push: true
           tags: rajasekhar1404/krs-docker-demo:latest
+
+  deploy_to_ec2:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+    needs: build_and_push
+    steps:
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
+      - name: Configure AWS credentials
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set default.region ${{ secrets.AWS_DEFAULT_REGION }}
+
+      - name: Pull Docker image in EC2
+        run: |
+          ssh -i ~/.ssh/key.pem ec2-user@3.84.220.235 "docker pull rajasekhar1404/krs-docker-demo:latest"
+
+      - name: Run Docker container in EC2
+        run: |
+          ssh -i ~/.ssh/key.pem ec2-user@3.84.220.235 "docker run -d -p 8080:8080 rajasekhar1404/krs-docker-demo:latest"
