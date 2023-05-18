@@ -41,4 +41,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: rajasekhar1404/krs-docker-demo
+          tags: rajasekhar1404/krs-docker-demo:latest
